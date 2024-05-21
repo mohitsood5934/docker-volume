@@ -1,70 +1,23 @@
-# Getting Started with Create React App
+- When we will run ```docker build .``` , then docker will look for a file with name as Dockerfile - means it will not run Dockerfile.dev. We need a way to
+run Dockerfile.dev
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+- docker build -f {fileName} {source} , where -f specififes the file name
 
-## Available Scripts
+``` docker build -f Dockerfile.dev . ```
+  
+  - Building a docker file will return the image id of the container 
+  -  We can use this image id to run the app
 
-In the project directory, you can run:
+  ``` docker run -p 3000:3000 <imageId> ```
 
-### `npm start`
+- Afer we have started our app inside the container , we observed that whenever we are making any change in the react component file and saving it then changes are not getting reflected. We can either fix this problem by building the docker file again and again , but this will be very much time consuming .So we have to find some other method to fix this problem
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- When we are copying our local file/folder inside docker container , then we are copying the folder . Any other change will not reflect untill we create a build of that.To fix this issue, we have something called <b>docker volume</b> . In docker container we are going to store the reference of this file and folders on the docker container
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+```docker run -p 3000:3000 -v /app/node_modules -v$(pwd):/app <imageId> ```
 
-### `npm test`
+In above we are bookmarking the node_modules folder and mapping the present working directory in to the /app folder
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```docker run -p 3000:3000 -v /app/node_modules -v $(pwd):/app  sha256:181db76b8fd337c7f6928da33d92b28b72b932de6d8450b023a28448d3632965```
 
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+we are bookmarking the node_modules folder here because we do not have node_modules folder in local . Here we are telling the docker container that please do not look for the node_modules as a reference.
