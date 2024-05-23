@@ -1,0 +1,7 @@
+sudo: required
+services:
+  - docker
+before_install:
+  - docker build -t msood123/docker-volume -f Dockerfile.dev .
+script:
+  - docker run -e CI=true msood123/docker-volume npm run test
